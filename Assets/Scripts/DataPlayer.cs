@@ -62,6 +62,11 @@ public class DataPlayer : MonoBehaviour
         Quaternion newQuaternion = new Quaternion();
         newQuaternion.Set(rx, ry, rz, 1);
         t.rotation = newQuaternion;
+        float scale = Random.value * 0.05f;//2f;
+        t.localScale = new Vector3(scale, scale, scale);
+
+        var rb = t.GetComponent<Rigidbody>();
+        rb.AddRelativeForce(new Vector3(0, 0, 1) * 10.1f);
     }
 
     // Update is called once per frame
@@ -69,6 +74,16 @@ public class DataPlayer : MonoBehaviour
     {
         var csv = gameObject.GetComponent("CSVParsing") as CSVParsing;
         int index = frameCount + 1;
+
+        // foreach(var t in instanceList["head"]) {
+        //     t.localScale = t.localScale * 0.93f;
+        // }
+        // foreach(var t in instanceList["left"]) {
+        //     t.localScale = t.localScale * 0.93f;
+        // }
+        // foreach(var t in instanceList["right"]) {
+        //     t.localScale = t.localScale * 0.93f;
+        // }
         SpawnObject(index, "head");
         SpawnObject(index, "left");
         SpawnObject(index, "right");
