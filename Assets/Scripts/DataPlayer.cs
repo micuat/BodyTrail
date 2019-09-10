@@ -14,43 +14,54 @@ public class DataPlayer : MonoBehaviour
 
     public int instances = 5000;
     Dictionary<string, List<Transform>> instanceList = new Dictionary<string, List<Transform>>();
+    Dictionary<string, int> indexOffset = new Dictionary<string, int>();
 
-    // List<Transform> instanceListH = new List<Transform>();
-    // List<Transform> instanceListL = new List<Transform>();
-    // List<Transform> instanceListR = new List<Transform>();
     int instanceIndex = 0;
 
     public float radius = 50f;
 
-
+    Transform InitTransform() {
+        int index = (int)Mathf.Floor(Random.value * prefabs.Length);
+        float scale = Random.value * 0.05f;
+        Transform t = Instantiate(prefabs[index]);
+        t.localScale = new Vector3(scale, scale, scale);
+        t.localPosition = new Vector3(1000000, 0, 0);// Random.insideUnitSphere * radius;
+        t.SetParent(transform);
+        return t;
+    }
     // Start is called before the first frame update
     void Start()
     {
         instanceList.Add("head", new List<Transform>());
         instanceList.Add("left", new List<Transform>());
         instanceList.Add("right", new List<Transform>());
+        indexOffset.Add("head", 0);
+        indexOffset.Add("left", 1);
+        indexOffset.Add("right", 2);
         for (int i = 0; i < instances; i++)
         {
-            int index = (int)Mathf.Floor(Random.value * prefabs.Length);
-            float scale = Random.value * 0.05f;
-            Transform t = Instantiate(prefabs[index]);
-            t.localScale = new Vector3(scale, scale, scale);
-            t.localPosition = new Vector3(1000000, 0, 0);// Random.insideUnitSphere * radius;
-            t.SetParent(transform);
-            instanceList["head"].Add(t);
-
-            t = Instantiate(prefabs[index]);
-            t.localScale = new Vector3(scale, scale, scale);
-            t.localPosition = new Vector3(1000000, 0, 0);// Random.insideUnitSphere * radius;
-            t.SetParent(transform);
-            instanceList["left"].Add(t);
-
-            t = Instantiate(prefabs[index]);
-            t.localScale = new Vector3(scale, scale, scale);
-            t.localPosition = new Vector3(1000000, 0, 0);// Random.insideUnitSphere * radius;
-            t.SetParent(transform);
-            instanceList["right"].Add(t);
+            instanceList["head"].Add(InitTransform());
+            instanceList["left"].Add(InitTransform());
+            instanceList["right"].Add(InitTransform());
         }
+    }
+
+    void SpawnObject(int index, string key) {
+        var csv = gameObject.GetComponent("CSVParsing") as CSVParsing;
+        int offset = indexOffset[key] * 2 * 3;
+        float x = float.Parse(csv.data[index][5 + offset]);// + Random.value * 0.1f - 0.05f;
+        float y = float.Parse(csv.data[index][6 + offset]);// + Random.value * 0.1f - 0.05f;
+        float z = float.Parse(csv.data[index][7 + offset]);// + Random.value * 0.1f - 0.05f;
+        float rx = float.Parse(csv.data[index][8 + offset]);
+        float ry = float.Parse(csv.data[index][9 + offset]);
+        float rz = float.Parse(csv.data[index][10 + offset]);
+        // trailH.transform.position = new Vector3(x, y, z);
+
+        Transform t = instanceList[key][instanceIndex];
+        t.position = new Vector3(x, y, z);
+        Quaternion newQuaternion = new Quaternion();
+        newQuaternion.Set(rx, ry, rz, 1);
+        t.rotation = newQuaternion;
     }
 
     // Update is called once per frame
@@ -58,51 +69,9 @@ public class DataPlayer : MonoBehaviour
     {
         var csv = gameObject.GetComponent("CSVParsing") as CSVParsing;
         int index = frameCount + 1;
-        {
-            float x = float.Parse(csv.data[index][5]);// + Random.value * 0.1f - 0.05f;
-            float y = float.Parse(csv.data[index][6]);// + Random.value * 0.1f - 0.05f;
-            float z = float.Parse(csv.data[index][7]);// + Random.value * 0.1f - 0.05f;
-            float rx = float.Parse(csv.data[index][8]);
-            float ry = float.Parse(csv.data[index][9]);
-            float rz = float.Parse(csv.data[index][10]);
-            // trailH.transform.position = new Vector3(x, y, z);
-
-            Transform t = instanceList["head"][instanceIndex];
-            t.position = new Vector3(x, y, z);
-            Quaternion newQuaternion = new Quaternion();
-            newQuaternion.Set(rx, ry, rz, 1);
-            t.rotation = newQuaternion;
-        }
-        {
-            float x = float.Parse(csv.data[index][5 + 3 * 2]);
-            float y = float.Parse(csv.data[index][6 + 3 * 2]);
-            float z = float.Parse(csv.data[index][7 + 3 * 2]);
-            float rx = float.Parse(csv.data[index][8 + 3 * 2]);
-            float ry = float.Parse(csv.data[index][9 + 3 * 2]);
-            float rz = float.Parse(csv.data[index][10 + 3 * 2]);
-            // trailL.transform.position = new Vector3(x, y, z);
-
-            Transform t = instanceList["left"][instanceIndex];
-            t.position = new Vector3(x, y, z);
-            Quaternion newQuaternion = new Quaternion();
-            newQuaternion.Set(rx, ry, rz, 1);
-            t.rotation = newQuaternion;
-        }
-        {
-            float x = float.Parse(csv.data[index][5 + 3 * 4]);
-            float y = float.Parse(csv.data[index][6 + 3 * 4]);
-            float z = float.Parse(csv.data[index][7 + 3 * 4]);
-            float rx = float.Parse(csv.data[index][8 + 3 * 4]);
-            float ry = float.Parse(csv.data[index][9 + 3 * 4]);
-            float rz = float.Parse(csv.data[index][10 + 3 * 4]);
-            // trailR.transform.position = new Vector3(x, y, z);
-
-            Transform t = instanceList["right"][instanceIndex];
-            t.position = new Vector3(x, y, z);
-            Quaternion newQuaternion = new Quaternion();
-            newQuaternion.Set(rx, ry, rz, 1);
-            t.rotation = newQuaternion;
-        }
+        SpawnObject(index, "head");
+        SpawnObject(index, "left");
+        SpawnObject(index, "right");
         {
             float x = float.Parse(csv.data[index][5 + 3 * 6]);
             float y = float.Parse(csv.data[index][6 + 3 * 6]);
