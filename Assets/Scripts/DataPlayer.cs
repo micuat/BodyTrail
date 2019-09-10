@@ -66,7 +66,8 @@ public class DataPlayer : MonoBehaviour
         t.localScale = new Vector3(scale, scale, scale);
 
         var rb = t.GetComponent<Rigidbody>();
-        rb.AddRelativeForce(new Vector3(0, 0, 1) * 10.1f);
+        rb.AddRelativeForce(new Vector3(0, 0, 1) * 10.0f);
+        rb.AddRelativeTorque(new Vector3(0, 0, 1) * 0.0f * Random.value);
     }
 
     // Update is called once per frame
