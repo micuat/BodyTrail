@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class DataPlayer : MonoBehaviour
+public class TrailGenerator : MonoBehaviour
 {
     public GameObject trailH;
     public GameObject trailL;
