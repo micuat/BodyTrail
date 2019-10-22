@@ -7,16 +7,27 @@ public class Gridity : MonoBehaviour
     public GameObject Player1;
     public GameObject Player2;
 
-    public GameObject line1;
-    public GameObject line2;
+    public GameObject line;
 
     public float GridRes = 2;
 
     List<GameObject> parts = new List<GameObject>();
+    List<Color> palette = new List<Color>();
 
     // Start is called before the first frame update
     void Start()
     {
+        Color c;
+        ColorUtility.TryParseHtmlString("#91A6FF", out c);
+        palette.Add(c);
+        ColorUtility.TryParseHtmlString("#FF88DC", out c);
+        palette.Add(c);
+        ColorUtility.TryParseHtmlString("#FAFF7F", out c);
+        palette.Add(c);
+        ColorUtility.TryParseHtmlString("#FFFFFF", out c);
+        palette.Add(c);
+        ColorUtility.TryParseHtmlString("#FF5154", out c);
+        palette.Add(c);
         parts.Add(Player1.transform.Find("Head").gameObject);
         parts.Add(Player1.transform.Find("LeftHand").gameObject);
         parts.Add(Player1.transform.Find("RightHand").gameObject);
@@ -24,7 +35,6 @@ public class Gridity : MonoBehaviour
         parts.Add(Player2.transform.Find("LeftHand").gameObject);
         parts.Add(Player2.transform.Find("RightHand").gameObject);
 
-        int count = 0;
         foreach (var part in parts)
         {
             GameObject g = new GameObject("Grid");
@@ -32,18 +42,16 @@ public class Gridity : MonoBehaviour
             g.transform.SetParent(part.transform);
             for (int i = 0; i < 8; i++)
             {
-                var line = line1;
-                if (count < 3) line = line2;
                 GameObject gc = Instantiate(line);
                 gc.transform.SetParent(g.transform);
             }
-            count++;
         }
     }
 
     // Update is called once per frame
     void Update()
     {
+        int count = 0;
         foreach (var part in parts)
         {
             for (int i = 0; i < 8; i++)
@@ -61,7 +69,35 @@ public class Gridity : MonoBehaviour
                 float s = Vector3.Distance(pos, quant) * 5;
                 float sm = Mathf.Max(s, 0.01f);
                 gc.transform.localScale = new Vector3(0.1f, s, 0.1f);
+                Color c;
+                GameObject head;
+                if (count < 3)
+                {
+                    head = parts[0];
+                }
+                else
+                {
+                    head = parts[3];
+                }
+
+                if (head == part)
+                {
+                    c = palette[0];
+                }
+                else
+                {
+                    if (part.transform.position.x < head.transform.position.x)
+                    {
+                        c = palette[1];
+                    }
+                    else
+                    {
+                        c = palette[2];
+                    }
+                }
+                gc.GetComponent<Renderer>().material.SetColor("_Color", c);
             }
+            count++;
         }
     }
 }
