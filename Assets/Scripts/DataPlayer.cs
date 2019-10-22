@@ -46,7 +46,7 @@ public class DataPlayer : MonoBehaviour
     }
 
     // Update is called once per frame
-    void Update()
+    void FixedUpdate()
     {
         var csv = gameObject.GetComponent("CSVParsing") as CSVParsing;
         int index = frameCount + 1;
