@@ -2,11 +2,11 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+// stupid fact:
+// always set Head, LeftHand, RightHand scale to 0.1, 0.1, 0.1
+
 public class Gridity : MonoBehaviour
 {
-    public GameObject Player1;
-    public GameObject Player2;
-
     public GameObject line;
 
     public float GridRes = 2;
@@ -17,6 +17,41 @@ public class Gridity : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        GameObject Player1 = GameObject.FindWithTag("Player");
+        parts.Add(Player1.transform.Find("Head").gameObject);
+        parts.Add(Player1.transform.Find("LeftHand").gameObject);
+        parts.Add(Player1.transform.Find("RightHand").gameObject);
+        foreach (var gameObj in FindObjectsOfType(typeof(GameObject)) as GameObject[])
+        {
+            if (gameObj.name == "Head")
+            {
+                if (gameObj != parts[0])
+                {
+                    parts.Add(gameObj);
+                }
+            }
+        }
+        foreach (var gameObj in FindObjectsOfType(typeof(GameObject)) as GameObject[])
+        {
+            if (gameObj.name == "LeftHand")
+            {
+                if (gameObj != parts[1])
+                {
+                    parts.Add(gameObj);
+                }
+            }
+        }
+        foreach (var gameObj in FindObjectsOfType(typeof(GameObject)) as GameObject[])
+        {
+            if (gameObj.name == "RightHand")
+            {
+                if (gameObj != parts[2])
+                {
+                    parts.Add(gameObj);
+                }
+            }
+        }
+
         Color c;
         ColorUtility.TryParseHtmlString("#91A6FF", out c);
         palette.Add(c);
@@ -28,12 +63,6 @@ public class Gridity : MonoBehaviour
         palette.Add(c);
         ColorUtility.TryParseHtmlString("#FF5154", out c);
         palette.Add(c);
-        parts.Add(Player1.transform.Find("Head").gameObject);
-        parts.Add(Player1.transform.Find("LeftHand").gameObject);
-        parts.Add(Player1.transform.Find("RightHand").gameObject);
-        parts.Add(Player2.transform.Find("Head").gameObject);
-        parts.Add(Player2.transform.Find("LeftHand").gameObject);
-        parts.Add(Player2.transform.Find("RightHand").gameObject);
 
         foreach (var part in parts)
         {

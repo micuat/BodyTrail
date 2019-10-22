@@ -4,9 +4,6 @@ using UnityEngine;
 
 public class Clothing : MonoBehaviour
 {
-    public GameObject Player1;
-    public GameObject Player2;
-
     public GameObject line;
     public float extrapolate = 1.0f;
 
@@ -16,11 +13,29 @@ public class Clothing : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        GameObject Player1 = GameObject.FindWithTag("Player");
         parts.Add(Player1.transform.Find("LeftHand").gameObject);
         parts.Add(Player1.transform.Find("RightHand").gameObject);
-        parts.Add(Player2.transform.Find("LeftHand").gameObject);
-        parts.Add(Player2.transform.Find("RightHand").gameObject);
-
+        foreach (var gameObj in FindObjectsOfType(typeof(GameObject)) as GameObject[])
+        {
+            if (gameObj.name == "LeftHand")
+            {
+                if (gameObj != parts[1])
+                {
+                    parts.Add(gameObj);
+                }
+            }
+        }
+        foreach (var gameObj in FindObjectsOfType(typeof(GameObject)) as GameObject[])
+        {
+            if (gameObj.name == "RightHand")
+            {
+                if (gameObj != parts[2])
+                {
+                    parts.Add(gameObj);
+                }
+            }
+        }
         for (int i = 0; i < 50; i++)
         {
             GameObject gc = Instantiate(line);
