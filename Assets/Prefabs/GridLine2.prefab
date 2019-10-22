@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 1910584587569302210}
   - component: {fileID: 5659960273150423172}
   m_Layer: 0
-  m_Name: GridLine
+  m_Name: GridLine2
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -58,7 +58,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 46f4909ff6eddc448b23636760f8deba, type: 2}
+  - {fileID: 2100000, guid: 3246f3e6edc237442850a9289275d623, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0

@@ -7,7 +7,8 @@ public class Gridity : MonoBehaviour
     public GameObject Player1;
     public GameObject Player2;
 
-    public GameObject line;
+    public GameObject line1;
+    public GameObject line2;
 
     public float GridRes = 2;
 
@@ -23,6 +24,7 @@ public class Gridity : MonoBehaviour
         parts.Add(Player2.transform.Find("LeftHand").gameObject);
         parts.Add(Player2.transform.Find("RightHand").gameObject);
 
+        int count = 0;
         foreach (var part in parts)
         {
             GameObject g = new GameObject("Grid");
@@ -30,9 +32,12 @@ public class Gridity : MonoBehaviour
             g.transform.SetParent(part.transform);
             for (int i = 0; i < 8; i++)
             {
+                var line = line1;
+                if (count < 3) line = line2;
                 GameObject gc = Instantiate(line);
                 gc.transform.SetParent(g.transform);
             }
+            count++;
         }
     }
 
@@ -54,6 +59,7 @@ public class Gridity : MonoBehaviour
                 gc.transform.position = Vector3.Lerp(pos, quant, 0.5f);
                 gc.transform.rotation = Quaternion.FromToRotation(Vector3.up, pos - quant);
                 float s = Vector3.Distance(pos, quant) * 5;
+                float sm = Mathf.Max(s, 0.01f);
                 gc.transform.localScale = new Vector3(0.1f, s, 0.1f);
             }
         }
