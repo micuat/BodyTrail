@@ -2,9 +2,9 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class AnchorGrid : BodyBase
+public class AnchorBlocks : BodyBase
 {
-  public GameObject line;
+  public GameObject Block;
 
   public float GridRes = 1;
 
@@ -43,7 +43,7 @@ public class AnchorGrid : BodyBase
           Anchors.Add(new AnchorInfo(i, j, k, gc));
           for (int ii = 0; ii < 4; ii++)
           {
-            GameObject gl = Instantiate(line);
+            GameObject gl = Instantiate(Block);
             gl.transform.parent = gc.transform;
             gl.transform.localPosition = new Vector3(0, 0, 0);
           }
@@ -74,23 +74,22 @@ public class AnchorGrid : BodyBase
         (iy - anchor.j) >= 0 && (iy - anchor.j) <= 1 &&
         (iz - anchor.k) >= 0 && (iz - anchor.k) <= 1)
         {
-          anchor.lengths[count] = Mathf.Lerp(anchor.lengths[count], s, 0.2f);
-          anchor.go.transform.GetChild(count).localScale = new Vector3(0.01f, anchor.lengths[count], 0.01f);
+          anchor.lengths[0] = Mathf.Lerp(anchor.lengths[0], s, 0.2f);
+          for (int i = 0; i < anchor.go.transform.childCount; i++)
+          {
+            anchor.go.transform.GetChild(count).position = Vector3.Lerp(partPos, gridPos, i * 0.25f);
+            // anchor.go.transform.GetChild(count).rotation = Quaternion.FromToRotation(Vector3.up, partPos - gridPos);
+            anchor.go.transform.GetChild(i).localScale = new Vector3(0.05f, 0.05f, 0.05f);
+          }
+          break;
         }
         else
         {
-          anchor.lengths[count] = Mathf.Lerp(anchor.lengths[count], 0, 0.2f);
-          if (anchor.lengths[count] < 0.01f)
+          for (int i = 0; i < anchor.go.transform.childCount; i++)
           {
-            anchor.go.transform.GetChild(count).localScale = new Vector3(0, 0, 0);
-          }
-          else
-          {
-            anchor.go.transform.GetChild(count).localScale = new Vector3(0.01f, anchor.lengths[count], 0.01f);
+            anchor.go.transform.GetChild(i).localScale = Vector3.zero;
           }
         }
-        anchor.go.transform.GetChild(count).position = Vector3.Lerp(partPos, gridPos, 0.5f);
-        anchor.go.transform.GetChild(count).rotation = Quaternion.FromToRotation(Vector3.up, partPos - gridPos);
         count++;
       }
     }
