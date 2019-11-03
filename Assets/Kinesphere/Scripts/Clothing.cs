@@ -2,40 +2,17 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Clothing : MonoBehaviour
+public class Clothing : BodyBase
 {
     public GameObject line;
     public float extrapolate = 1.0f;
 
-    List<GameObject> parts = new List<GameObject>();
     List<GameObject> lines = new List<GameObject>();
 
     // Start is called before the first frame update
     void Start()
     {
-        GameObject Player1 = GameObject.FindWithTag("Player");
-        parts.Add(Player1.transform.Find("LeftHand").gameObject);
-        parts.Add(Player1.transform.Find("RightHand").gameObject);
-        foreach (var gameObj in FindObjectsOfType(typeof(GameObject)) as GameObject[])
-        {
-            if (gameObj.name == "LeftHand")
-            {
-                if (gameObj != parts[1])
-                {
-                    parts.Add(gameObj);
-                }
-            }
-        }
-        foreach (var gameObj in FindObjectsOfType(typeof(GameObject)) as GameObject[])
-        {
-            if (gameObj.name == "RightHand")
-            {
-                if (gameObj != parts[2])
-                {
-                    parts.Add(gameObj);
-                }
-            }
-        }
+        base.loadPlayers();
         for (int i = 0; i < 50; i++)
         {
             GameObject gc = Instantiate(line);
@@ -47,17 +24,21 @@ public class Clothing : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        Vector3 centroid1 = Vector3.Lerp(parts[0].transform.position, parts[1].transform.position, 0.5f);
-        Vector3 centroid2 = Vector3.Lerp(parts[2].transform.position, parts[3].transform.position, 0.5f);
-        float length1 = Vector3.Distance(parts[0].transform.position, parts[1].transform.position);
-        float length2 = Vector3.Distance(parts[2].transform.position, parts[3].transform.position);
+        Vector3 mLeft = parts[1].transform.position;
+        Vector3 mRight = parts[2].transform.position;
+        Vector3 oLeft = parts[4].transform.position;
+        Vector3 oRight = parts[5].transform.position;
+        Vector3 centroid1 = Vector3.Lerp(mLeft, mRight, 0.5f);
+        Vector3 centroid2 = Vector3.Lerp(oLeft, oRight, 0.5f);
+        float length1 = Vector3.Distance(mLeft, mRight);
+        float length2 = Vector3.Distance(oLeft, oRight);
         for (int i = 0; i < 50; i++)
         {
             GameObject gc = lines[i];
             float lerp = ((float)i / 50) * (1 + extrapolate) - extrapolate * 0.5f;
             gc.transform.position = centroid1 * (1 - lerp) + centroid2 * lerp;
-            Vector3 leftLerp = parts[0].transform.position * (1-lerp) + parts[3].transform.position * lerp;
-            Vector3 rightLerp = parts[1].transform.position * (1 - lerp) + parts[2].transform.position * lerp;
+            Vector3 leftLerp = mLeft * (1-lerp) + oRight * lerp;
+            Vector3 rightLerp = mRight * (1 - lerp) + oLeft * lerp;
             gc.transform.rotation = Quaternion.FromToRotation(Vector3.up, leftLerp - rightLerp);
             float s = (length1 * (1 - lerp) + length2 * lerp) * 0.5f;
             gc.transform.localScale = new Vector3(0.01f, s, 0.01f);
