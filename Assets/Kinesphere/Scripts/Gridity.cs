@@ -9,7 +9,7 @@ public class Gridity : BodyBase
 {
     public GameObject line;
 
-    public float GridRes = 2;
+    public float GridRes = 1;
 
     List<Color> palette = new List<Color>();
 
