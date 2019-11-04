@@ -87,7 +87,7 @@ public class GridReactor : MonoBehaviour
       {
         transform.GetChild(count).localScale = new Vector3(0.01f, lengths[count], 0.01f);
       }
-      transform.GetChild(count).position = Vector3.Lerp(partPos, gridPos, 0.5f);
+      transform.GetChild(count).position = Vector3.Lerp(gridPos, partPos, 0.5f * lengths[count] / s);
       transform.GetChild(count).rotation = Quaternion.FromToRotation(Vector3.up, partPos - gridPos);
       count++;
     }
