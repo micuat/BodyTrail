@@ -1071,6 +1071,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   line: {fileID: 8331918821170518630, guid: 6fc17f371e3bf8741b8f55cba1ce06b9, type: 3}
   GridRes: 2
+  Size: 4
 --- !u!4 &1704516532
 Transform:
   m_ObjectHideFlags: 0
@@ -1101,7 +1102,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!114 &1949822424
 MonoBehaviour:
   m_ObjectHideFlags: 0
