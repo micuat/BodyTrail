@@ -25,18 +25,8 @@ public class AnchorGrid : BodyBase
         {
           GameObject gc = new GameObject("Anchor");
           gc.AddComponent(typeof(GridReactor));
-          gc.transform.position = new Vector3(i / GridRes, j / GridRes, k / GridRes);
-          gc.transform.parent = transform;
-          gc.GetComponent<GridReactor>().i = i;
-          gc.GetComponent<GridReactor>().j = j;
-          gc.GetComponent<GridReactor>().k = k;
+          gc.GetComponent<GridReactor>().Init(transform, i, j, k);
           Anchors.Add(gc);
-          for (int ii = 0; ii < 4; ii++)
-          {
-            GameObject gl = Instantiate(line);
-            gl.transform.parent = gc.transform;
-            gl.transform.localPosition = new Vector3(0, 0, 0);
-          }
         }
       }
     }
