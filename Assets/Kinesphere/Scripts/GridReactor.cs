@@ -44,14 +44,14 @@ public class GridReactor : MonoBehaviour
       Vector3 partPos = part.transform.position;
       Vector3 gridPos = transform.position;
 
-      float ix = Mathf.Floor(partPos.x * GridRes + 0.5f);
-      float iy = Mathf.Floor(partPos.y * GridRes + 0.5f);
-      float iz = Mathf.Floor(partPos.z * GridRes + 0.5f);
+      float ix = partPos.x * GridRes - i;
+      float iy = partPos.y * GridRes - j;
+      float iz = partPos.z * GridRes - k;
 
       float s = Vector3.Distance(partPos, gridPos) * 0.5f;
-      if ((ix - i) >= 0 && (ix - i) <= 1 &&
-      (iy - j) >= 0 && (iy - j) <= 1 &&
-      (iz - k) >= 0 && (iz - k) <= 1)
+      if (ix >= -1 && ix <= 1 &&
+      iy >= -1 && iy <= 1 &&
+      iz >= -1 && iz <= 1)
       {
         lengths[count] = Mathf.Lerp(lengths[count], s, 0.2f);
         transform.GetChild(count).localScale = new Vector3(0.01f, lengths[count], 0.01f);
