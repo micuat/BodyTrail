@@ -8,21 +8,7 @@ public class AnchorGrid : BodyBase
 
   public float GridRes = 1;
 
-  public class AnchorInfo
-  {
-    public GameObject go;
-    public int i, j, k;
-    public float[] lengths = new float[4];
-
-    public AnchorInfo(int _i, int _j, int _k, GameObject a)
-    {
-      i = _i;
-      j = _j;
-      k = _k;
-      go = a;
-    }
-  }
-  List<AnchorInfo> Anchors = new List<AnchorInfo>();
+  List<GameObject> Anchors = new List<GameObject>();
 
   // Start is called before the first frame update
   void Start()
@@ -38,9 +24,13 @@ public class AnchorGrid : BodyBase
         for (int k = -M; k <= M; k++)
         {
           GameObject gc = new GameObject("Anchor");
+          gc.AddComponent(typeof(GridReactor));
           gc.transform.position = new Vector3(i / GridRes, j / GridRes, k / GridRes);
           gc.transform.parent = transform;
-          Anchors.Add(new AnchorInfo(i, j, k, gc));
+          gc.GetComponent<GridReactor>().i = i;
+          gc.GetComponent<GridReactor>().j = j;
+          gc.GetComponent<GridReactor>().k = k;
+          Anchors.Add(gc);
           for (int ii = 0; ii < 4; ii++)
           {
             GameObject gl = Instantiate(line);
@@ -63,34 +53,35 @@ public class AnchorGrid : BodyBase
       {
         GameObject part = parts[index];
         Vector3 partPos = part.transform.position;
-        Vector3 gridPos = anchor.go.transform.position;
+        Vector3 gridPos = anchor.transform.position;
+        GridReactor reactor = anchor.GetComponent<GridReactor>();
 
         float ix = Mathf.Floor(partPos.x * GridRes + 0.5f);
         float iy = Mathf.Floor(partPos.y * GridRes + 0.5f);
         float iz = Mathf.Floor(partPos.z * GridRes + 0.5f);
 
         float s = Vector3.Distance(partPos, gridPos) * 0.5f;
-        if ((ix - anchor.i) >= 0 && (ix - anchor.i) <= 1 &&
-        (iy - anchor.j) >= 0 && (iy - anchor.j) <= 1 &&
-        (iz - anchor.k) >= 0 && (iz - anchor.k) <= 1)
+        if ((ix - reactor.i) >= 0 && (ix - reactor.i) <= 1 &&
+        (iy - reactor.j) >= 0 && (iy - reactor.j) <= 1 &&
+        (iz - reactor.k) >= 0 && (iz - reactor.k) <= 1)
         {
-          anchor.lengths[count] = Mathf.Lerp(anchor.lengths[count], s, 0.2f);
-          anchor.go.transform.GetChild(count).localScale = new Vector3(0.01f, anchor.lengths[count], 0.01f);
+          reactor.lengths[count] = Mathf.Lerp(reactor.lengths[count], s, 0.2f);
+          anchor.transform.GetChild(count).localScale = new Vector3(0.01f, reactor.lengths[count], 0.01f);
         }
         else
         {
-          anchor.lengths[count] = Mathf.Lerp(anchor.lengths[count], 0, 0.2f);
-          if (anchor.lengths[count] < 0.01f)
+          reactor.lengths[count] = Mathf.Lerp(reactor.lengths[count], 0, 0.2f);
+          if (reactor.lengths[count] < 0.01f)
           {
-            anchor.go.transform.GetChild(count).localScale = new Vector3(0, 0, 0);
+            anchor.transform.GetChild(count).localScale = new Vector3(0, 0, 0);
           }
           else
           {
-            anchor.go.transform.GetChild(count).localScale = new Vector3(0.01f, anchor.lengths[count], 0.01f);
+            anchor.transform.GetChild(count).localScale = new Vector3(0.01f, reactor.lengths[count], 0.01f);
           }
         }
-        anchor.go.transform.GetChild(count).position = Vector3.Lerp(partPos, gridPos, 0.5f);
-        anchor.go.transform.GetChild(count).rotation = Quaternion.FromToRotation(Vector3.up, partPos - gridPos);
+        anchor.transform.GetChild(count).position = Vector3.Lerp(partPos, gridPos, 0.5f);
+        anchor.transform.GetChild(count).rotation = Quaternion.FromToRotation(Vector3.up, partPos - gridPos);
         count++;
       }
     }
