@@ -5,7 +5,7 @@ using UnityEngine;
 public class GridReactor : MonoBehaviour
 {
   public int i, j, k;
-  public float[] lengths = new float[4];
+  public float[] lengths;
 
   // Start is called before the first frame update
   void Start()
@@ -14,15 +14,19 @@ public class GridReactor : MonoBehaviour
 
   public void Init(Transform parent, int _i, int _j, int _k)
   {
-    float GridRes = parent.GetComponent<AnchorGrid>().GridRes;
-    GameObject line = parent.GetComponent<AnchorGrid>().line;
+    AnchorGrid grid = parent.GetComponent<AnchorGrid>();
+    float GridRes = grid.GridRes;
+    GameObject line = grid.line;
 
     i = _i;
     j = _j;
     k = _k;
     transform.position = new Vector3(i / GridRes, j / GridRes, k / GridRes);
     transform.parent = parent;
-    for (int ii = 0; ii < 4; ii++)
+
+    int numParts = grid.GetParts().Count;
+    lengths = new float[numParts];
+    for (int ii = 0; ii < numParts; ii++)
     {
       GameObject gl = Instantiate(line);
       gl.transform.parent = transform;
@@ -35,10 +39,8 @@ public class GridReactor : MonoBehaviour
   {
     float GridRes = transform.parent.GetComponent<AnchorGrid>().GridRes;
     int count = 0;
-    int[] indices = { 1, 2, 4, 5 };
-    foreach (var index in indices)
+    foreach (var part in transform.parent.GetComponent<AnchorGrid>().GetParts())
     {
-      GameObject part = transform.parent.GetComponent<AnchorGrid>().GetParts()[index];
       Vector3 partPos = part.transform.position;
       Vector3 gridPos = transform.position;
 

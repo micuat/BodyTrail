@@ -8,14 +8,19 @@ public class AnchorGrid : BodyBase
 
   public float GridRes = 1;
 
-  List<GameObject> Anchors = new List<GameObject>();
-
   public int Size = 4;
+
+  List<GameObject> SelectedParts = new List<GameObject>();
 
   // Start is called before the first frame update
   void Start()
   {
     base.loadPlayers();
+    int[] indices = { 1, 2, 4, 5 };
+    foreach (var index in indices)
+    {
+      SelectedParts.Add(parts[index]);
+    }
 
     int N = Size;
     int M = Size / 2;
@@ -28,7 +33,6 @@ public class AnchorGrid : BodyBase
           GameObject gc = new GameObject("Anchor");
           gc.AddComponent(typeof(GridReactor));
           gc.GetComponent<GridReactor>().Init(transform, i, j, k);
-          Anchors.Add(gc);
         }
       }
     }
@@ -36,15 +40,11 @@ public class AnchorGrid : BodyBase
 
   public List<GameObject> GetParts()
   {
-    return parts;
+    return SelectedParts;
   }
 
   // Update is called once per frame
   void Update()
   {
-    foreach (var anchor in Anchors)
-    {
-
-    }
   }
 }
