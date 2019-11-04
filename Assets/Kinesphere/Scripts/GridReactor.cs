@@ -6,6 +6,8 @@ public class GridReactor : MonoBehaviour
 {
   public int i, j, k;
   public float[] lengths;
+  public float[] lastTimes;
+  public bool[] inRange;
 
   // Start is called before the first frame update
   void Start()
@@ -26,6 +28,8 @@ public class GridReactor : MonoBehaviour
 
     int numParts = grid.GetParts().Count;
     lengths = new float[numParts];
+    lastTimes = new float[numParts];
+    inRange = new bool[numParts];
     for (int ii = 0; ii < numParts; ii++)
     {
       GameObject gl = Instantiate(line);
@@ -53,20 +57,35 @@ public class GridReactor : MonoBehaviour
       iy >= -1 && iy <= 1 &&
       iz >= -1 && iz <= 1)
       {
-        lengths[count] = Mathf.Lerp(lengths[count], s, 0.2f);
-        transform.GetChild(count).localScale = new Vector3(0.01f, lengths[count], 0.01f);
+        // within range
+        if (!inRange[count])
+        {
+          inRange[count] = true;
+          lastTimes[count] = Time.time;
+        }
+        float t = Time.time - lastTimes[count];
+        if (t > 1) t = 1;
+        lengths[count] = Equations.EaseInOutCubic(t, 0, s, 1);
       }
       else
       {
-        lengths[count] = Mathf.Lerp(lengths[count], 0, 0.2f);
-        if (lengths[count] < 0.01f)
+        if (inRange[count])
         {
-          transform.GetChild(count).localScale = new Vector3(0, 0, 0);
+          inRange[count] = false;
+          lastTimes[count] = Time.time;
         }
-        else
-        {
-          transform.GetChild(count).localScale = new Vector3(0.01f, lengths[count], 0.01f);
-        }
+        float t = Time.time - lastTimes[count];
+        float td = 0.5f;
+        if (t > td) t = td;
+        lengths[count] = Equations.EaseInOutCubic(t, s, -s, td);
+      }
+      if (lengths[count] < 0.01f)
+      {
+        transform.GetChild(count).localScale = new Vector3(0, 0, 0);
+      }
+      else
+      {
+        transform.GetChild(count).localScale = new Vector3(0.01f, lengths[count], 0.01f);
       }
       transform.GetChild(count).position = Vector3.Lerp(partPos, gridPos, 0.5f);
       transform.GetChild(count).rotation = Quaternion.FromToRotation(Vector3.up, partPos - gridPos);
